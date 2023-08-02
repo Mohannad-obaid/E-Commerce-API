@@ -1,0 +1,17 @@
+{
+    "separators.enabledSymbols": [
+        "Classes",
+        "Enums",
+        "Functions",
+        "Interfaces",
+        "Methods",
+        "Namespaces",
+        "Structs"
+    ],
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/eb118858-1e63-4b94-a903-64b378efc6da/resourceGroups/E-Shop-Api_group/providers/Microsoft.Web/sites/E-Shop-Api",
+    "appService.deploySubpath": "middlewares"
+}
