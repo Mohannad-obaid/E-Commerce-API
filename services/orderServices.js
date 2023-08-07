@@ -6,6 +6,7 @@ const Order = require("../models/orderModel");
 const Cart = require("../models/cartModel");
 const Product = require("../models/productModel");
 const factory = require("./handlersFactory");
+const User = require("../models/userModel");
 
 const checkQuantityProduct = async (cartItems) => {
   const promises = cartItems.map(async (item) => {
@@ -147,6 +148,9 @@ exports.updateOrderToDelivered = asyncHandler(async (req, res, next) => {
   res.status(200).json({ status: "success", data: updatedOrder });
 });
 
+
+
+
 // @desc    Get checkout session from stripe and send it as response
 // @route   GET /api/v1/orders/checkout-session/cartId
 // @access  Protected/User
@@ -215,6 +219,50 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
   });
 });
 
+
+const createCartOrder = async (session) => {
+  const cartId = session.client_reference_id;
+  const shippingAddress = session.metadata;
+  const totalOrderPrice = session.amount_total / 100;
+
+  const cart = await Cart.findById(cartId);
+  const user = User.findOne({ email: session.customer_email });
+
+  const order = await Order.create({
+    user: user._id,
+    cartItems: cart.cartItems,
+    shippingAddress,
+    totalOrderPrice,
+    paymentMethodType: "card",
+    isPaid: true,
+    paidAt: Date.now(),
+  });
+
+  // 4) After creating order, decrement product quantity, increment product sold
+  if (order) {
+    // 4.1) Check if product quantity is enough
+    await checkQuantityProduct(order.cartItems);
+
+    const bulkOption = order.cartItems.map((item) => ({
+      updateOne: {
+        filter: { _id: item.product },
+        update: { $inc: { quntity: -item.quantity, sold: +item.quantity } },
+      },
+    }));
+    await Product.bulkWrite(bulkOption, {});
+
+    // 5) Clear cart depend on cartId
+    await Cart.findByIdAndDelete(cartId);
+  }
+
+  
+};
+
+
+// @desc    This webhook will run when stripe payment success paid
+// @route   POST /webhook-checkout
+// @access  Protected/User
+
 exports.webhookCheckout = asyncHandler(async (req, res, next) => {
   const sig = req.headers["stripe-signature"];
   let event;
@@ -232,17 +280,22 @@ exports.webhookCheckout = asyncHandler(async (req, res, next) => {
   // Handle the event
   console.log(`Unhandled event type ${event.type}`);
 
-  // Handle the event
+/*   // Handle the event
   switch (event.type) {
     case "checkout.session.completed":
-      console.log(event.data.object);
+      await createCartOrder(event.data.object);
       break;
     // ... handle other event types
     default:
       console.log(`Unhandled event type ${event.type}`);
+  } */
+
+  if (event.type === 'checkout.session.completed') {
+    //  Create order
+    await createCartOrder(event.data.object);
   }
 
   // Return a 200 response to acknowledge receipt of the event
-  res.send();
+  res.status(200).json({ received: true });
 });
 

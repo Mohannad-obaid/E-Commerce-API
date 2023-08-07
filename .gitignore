@@ -1,4 +1,6 @@
 # ENV
+config.env
+./config.env
 .env
 *.env
 /.env
