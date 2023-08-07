@@ -1,8 +1,12 @@
 # ENV
 .env
+*.env
 /.env
+./.env
 /.vscode
 /.gitignore
+.vscode
+.gitignore
 
 
 
