@@ -30,7 +30,12 @@ app.options('*', cors());
 app.use(compression());
 
 
-
+// Checkout webhook
+app.post(
+    '/webhook-checkout',
+    express.raw({ type: 'application/json' }),
+    webhookCheckout
+  );
 
 
 //Middleware
