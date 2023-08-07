@@ -105,7 +105,7 @@ router
   );
 
 router
-  .route("/changeMyPassword/")
+  .route("/change-My-Password/")
   .put(authService.protect,authService.allowedTo("admin","user"),
   getUserValidator, changeLoggedUserPasswordValidator, updateLoggedUserPassword);
 
