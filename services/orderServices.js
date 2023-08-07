@@ -205,7 +205,7 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
 
     mode: "payment",
     success_url: `${req.protocol}://${req.get("host")}/api/v1/order`,
-    cancel_url:  `${req.protocol}://${req.get("host")}/api/v1/cart`,
+    cancel_url: `${req.protocol}://${req.get("host")}/api/v1/cart`,
     customer_email: req.user.email,
     client_reference_id: req.params.cartId,
     metadata: req.body.shippingAddress,
@@ -255,7 +255,7 @@ const createCartOrder = async (session) => {
     await Cart.findByIdAndDelete(cartId);
   }
 
-  
+
 };
 
 
@@ -279,16 +279,6 @@ exports.webhookCheckout = asyncHandler(async (req, res, next) => {
 
   // Handle the event
   console.log(`Unhandled event type ${event.type}`);
-
-/*   // Handle the event
-  switch (event.type) {
-    case "checkout.session.completed":
-      await createCartOrder(event.data.object);
-      break;
-    // ... handle other event types
-    default:
-      console.log(`Unhandled event type ${event.type}`);
-  } */
 
   if (event.type === 'checkout.session.completed') {
     //  Create order

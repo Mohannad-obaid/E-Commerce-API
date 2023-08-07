@@ -50,9 +50,15 @@ app.use(express.static('public'));
 // Mount routes to app 
 mountRoutes(app);
 
-// webhook-checkout
-app.post("/webhook-checkout", express.raw({ type: 'application/json' }), webhookCheckout)
 
+// Checkout webhook
+app.post(
+    '/webhook-checkout',
+    express.raw({ type: 'application/json' }),
+    webhookCheckout
+  );
+
+//app.listen(4242, () => console.log('Running on port 4242'));
 
 app.all('*', (req, res, next) => {
     // create error and pass to next middleware
