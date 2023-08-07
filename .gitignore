@@ -1,11 +1,8 @@
 # ENV
 .env
-.env.local
-.env.development
-.env.development.local
-.env.test
-.eslintrc.json
-.gitignore
-.vscode
-./ENV
-./.env
+/.env
+/.vscode
+/.gitignore
+
+
+

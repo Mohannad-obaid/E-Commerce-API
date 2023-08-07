@@ -166,36 +166,38 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
     ? cart.totalPriceAfterDiscount
     : cart.totalCartPrice;
 
-    
   const totalOrderPrice = cartPrice + cartPrice * taxPrice + shippingPrice;
 
   console.log(totalOrderPrice);
 
   const product = await stripe.products.create({
-    name: 'Product in cart',
-    description: 'Comfortable cotton t-shirt',
-    images: ['https://media.sproutsocial.com/uploads/2017/02/10x-featured-social-media-image-size.png'],
+    name: "Product in cart",
+    description: "Comfortable cotton t-shirt",
+    images: [
+      "https://media.sproutsocial.com/uploads/2017/02/10x-featured-social-media-image-size.png",
+    ],
   });
-  
+
   const price = await stripe.prices.create({
     product: product.id,
     unit_amount: totalOrderPrice * 100,
-    currency: 'usd',
+    currency: "usd",
   });
 
   // 3) Create stripe checkout session
   // https://stripe.com/docs/payments/checkout/migrating-prices
   const session = await stripe.checkout.sessions.create({
-
-    line_items: [{
-       // name: 'T-shirt',
-       // description: 'Comfortable cotton t-shirt',
-       // images: ['https://example.com/t-shirt.png'],
-       //  amount: 2000,
-       // currency: 'usd',
+    line_items: [
+      {
+        // name: 'T-shirt',
+        // description: 'Comfortable cotton t-shirt',
+        // images: ['https://example.com/t-shirt.png'],
+        //  amount: 2000,
+        // currency: 'usd',
         price: price.id,
         quantity: 1,
-      },],
+      },
+    ],
 
     mode: "payment",
     success_url: `${req.protocol}://${req.get("host")}/order`,
@@ -212,3 +214,35 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
     },
   });
 });
+
+exports.webhookCheckout = asyncHandler(async (req, res, next) => {
+  const sig = req.headers["stripe-signature"];
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(
+      req.body,
+      sig,
+      process.env.STRIPE_WEBHOOK_SECRET
+    );
+  } catch (err) {
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  // Handle the event
+  console.log(`Unhandled event type ${event.type}`);
+
+  // Handle the event
+  switch (event.type) {
+    case "checkout.session.completed":
+      console.log(event.data.object);
+      break;
+    // ... handle other event types
+    default:
+      console.log(`Unhandled event type ${event.type}`);
+  }
+
+  // Return a 200 response to acknowledge receipt of the event
+  res.send();
+});
+
