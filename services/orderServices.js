@@ -226,7 +226,10 @@ const createCartOrder = async (session) => {
   const totalOrderPrice = session.amount_total / 100;
 
   const cart = await Cart.findById(cartId);
-  const user = User.findOne({ email: session.customer_email });
+  const user = await User.findOne({ email: session.customer_email });
+
+  if(!cart || !user) 
+      return new ApiError("Cart or user not found", 404);
 
   const order = await Order.create({
     user: user._id,
@@ -276,9 +279,6 @@ exports.webhookCheckout = asyncHandler(async (req, res, next) => {
   } catch (err) {
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
-
-  // Handle the event
-  console.log(`Unhandled event type ${event.type}`);
 
   if (event.type === 'checkout.session.completed') {
     //  Create order
