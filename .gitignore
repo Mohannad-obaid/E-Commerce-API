@@ -10,5 +10,11 @@ config.env
 .vscode
 .gitignore
 
+.eslintrc.json
+*.eslintrc.json
+/.eslintrc.json
+./.eslintrc.json
+
+
 
 

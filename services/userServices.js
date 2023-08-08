@@ -14,6 +14,7 @@ const createToken = require('../utils/createToken');
 
 
 
+
 //upload category image
 exports.uplodUserImage = uploadSingleImage("profileImage");
 
@@ -87,7 +88,7 @@ exports.createUser = fatcory.createOne(userModel);
 
 exports.getUsers = fatcory.getAll(userModel);
 
-exports.getUserById = fatcory.getOne(userModel);
+exports.getUserById =  fatcory.getOne(userModel);
 
 exports.updateUser = asyncHandler(async (req, res, next) => {
     const { _id } = req.params;

@@ -1,6 +1,9 @@
 const asyncHandler = require("express-async-handler");
 const ApiError = require("../utils/apiError");
 const ApiFeatures = require("../utils/apiFeatures");
+const User = require("../models/userModel");
+const { sanitizeUserLogged } = require("../utils/sanitizeData");
+
 
 
 exports.deleteOneDoc = (Model) =>
@@ -87,6 +90,11 @@ exports.getOne = (Model, populationOpt) =>
     if (!document) {
       return next(new ApiError("Document not found", 404));
     }
+
+    if (Model === User) {
+      res.status(200).json({ data: sanitizeUserLogged(document) });
+    }
+
 
     res.status(200).json({ data: document });
   });

@@ -1,84 +1,108 @@
-const path = require('path');
+const express = require("express");
+const dotenv = require("dotenv");
+const rateLimit = require("express-rate-limit");
+const helmet = require("helmet");
+const hpp = require("hpp");
+const mongoSanitize = require('express-mongo-sanitize');
+const { xss } = require('express-xss-sanitizer');
 
-const express = require('express');
-const dotenv = require('dotenv');
-
-dotenv.config({ path: 'config.env' });
+dotenv.config({ path: "config.env" });
 const port = process.env.PORT || 3030;
-const morgan = require('morgan');
-const cors = require('cors');
-const compression = require('compression');
-const dbConnect = require('./config/db');
-const ApiError = require('./utils/apiError');
-const globalErrorHandler = require('./middlewares/errorMiddleware');
-const { webhookCheckout } = require('./services/orderServices')
+const morgan = require("morgan");
+const cors = require("cors");
+const compression = require("compression");
+const dbConnect = require("./config/db");
+const ApiError = require("./utils/apiError");
+const globalErrorHandler = require("./middlewares/errorMiddleware");
+const { webhookCheckout } = require("./services/orderServices");
 // Routes
-const mountRoutes = require('./router');
+const mountRoutes = require("./router");
 
 const app = express();
 
+// Set security HTTP headers
+app.use(helmet());
 
 // Connect to database
 dbConnect();
 
-// Enable cors 
+// Enable cors
 app.use(cors());
-app.options('*', cors());
-
+app.options("*", cors());
 
 // Compress all responses
 app.use(compression());
 
-
 // Checkout webhook
 app.post(
-    '/webhook-checkout',
-    express.raw({ type: 'application/json' }),
+    "/webhook-checkout",
+    express.raw({ type: "application/json" }),
     webhookCheckout
-  );
+);
 
+// Body parser, reading data from body into req.body
+app.use(express.json({ limit: "10kb" }));
 
-//Middleware
+// Data sanitization against XSS
+app.use(xss());
 
-app.use(express.json());
-app.use(express.static(path.join(__dirname, 'uploads')));
+// Data sanitization against NoSQL query injection
+app.use(mongoSanitize());
+
+//app.use(express.static(path.join(__dirname, 'uploads')));
 
 // Dev logging middleware
-if (process.env.NODE_ENV === 'development') {
-    app.use(morgan('dev'));
-    console.log('Morgan enabled...');
+if (process.env.NODE_ENV === "development") {
+    app.use(morgan("dev"));
+    console.log("Morgan enabled...");
 }
 
+// Limit request from same API
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 105, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+    message: "Too many requests from this IP, please try again in an hour!",
+});
+
+// Apply the rate limiting middleware to all requests
+app.use("/api", limiter);
+
+// Prevent parameter pollution
+app.use(
+    hpp({
+        whitelist: ["sold", "price", "ratingsAverage", "ratingsQuantity"],
+    })
+);
+
+
+
+
+
 // Routes
-app.use(express.static('public'));
+app.use(express.static("public"));
 
-// Mount routes to app 
+// Mount routes to app
 mountRoutes(app);
-
 
 // Checkout webhook
 app.post(
-    '/webhook-checkout',
-    express.raw({ type: 'application/json' }),
+    "/webhook-checkout",
+    express.raw({ type: "application/json" }),
     webhookCheckout
-  );
+);
 
 //app.listen(4242, () => console.log('Running on port 4242'));
 
-app.all('*', (req, res, next) => {
+app.all("*", (req, res, next) => {
     // create error and pass to next middleware
     // const err = new Error(`Can't find ${req.originalUrl} on this server!`);
     // next(err.message);
 
-    next(new ApiError(`Can't find this route :${req.originalUrl}`, 400))
-
-})
-
+    next(new ApiError(`Can't find this route :${req.originalUrl}`, 400));
+});
 
 //Erorr Handler
 app.use(globalErrorHandler);
-
-
 
 // Listen to port
 const server = app.listen(port, () => {
@@ -90,7 +114,7 @@ const server = app.listen(port, () => {
 process.on("unhandledRejection", (err) => {
     console.log(`UnhandledRejection Error : ${err.name} ${err.message}`);
     server.close(() => {
-        console.log('Server shutdown ...');
+        console.log("Server shutdown ...");
         process.exit(1);
     });
-})
+});
