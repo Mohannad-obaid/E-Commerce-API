@@ -41,7 +41,7 @@ exports.login = asyncHandler(async (req, res, next) => {
   // 2- check if user exist && password is correct
   const user = await User.findOne({ email: req.body.email });
 
-  if (!user || !(await bcrypt.compare(req.body.password, user.password))) {
+  if (!user || !(bcrypt.compare(req.body.password, user.password))) {
     return next(new ApiError("Invalid credentials", 401));
   }
 

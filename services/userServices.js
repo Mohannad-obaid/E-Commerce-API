@@ -147,7 +147,6 @@ exports.getLoggedUserData = asyncHandler(async (req, res, next) => {
 
 exports.updateLoggedUserPassword = asyncHandler(async (req, res, next) => {
 
-    console.log(req.body);
     const user = await userModel.findOneAndUpdate(
         req.user._id,
         {
@@ -187,6 +186,7 @@ exports.updateLoggedUserData = asyncHandler(async (req, res, next) => {
 });
 
 exports.deactivateAccountUserLogged = asyncHandler(async (req, res, next) => {
+
     await userModel.findOneAndUpdate(req.user._id, { active: false });
 
     res.status(204).json({ data: `Don : ${true}` });

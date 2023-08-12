@@ -1,0 +1,2362 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "E-Commerce service API",
+    "version": "1.0.0",
+    "description": "This is a sample server for an E-Commerce service API."
+  },
+  "servers": [
+    {
+      "url": "https://shop-system.azurewebsites.net/",
+      "description": "Production server (hosted on Azure)"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Auth management"
+    },
+    {
+      "name": "User",
+      "description": "User management (Admin)"
+    },
+    {
+      "name": "Logged User",
+      "description": "Logged User management"
+    },
+    {
+      "name": "AddressUser",
+      "description": "Address management"
+    },
+    {
+      "name": "Brand",
+      "description": "Brand management"
+    },
+    {
+      "name": "Category",
+      "description": "Category management"
+    },
+    {
+      "name": "Category/SubCategory",
+      "description": "SubCategory management"
+    },
+    {
+      "name": "SubCategory",
+      "description": "SubCategory management"
+    },
+    {
+      "name": "Product",
+      "description": "Product management"
+    },
+    {
+      "name": "Review",
+      "description": "Review management"
+    },
+    {
+      "name": "ProductReview",
+      "description": "ProductReview management"
+    },
+    {
+      "name": "Cart",
+      "description": "Cart management"
+    },
+    {
+      "name": "Wishlist",
+      "description": "Wishlist management"
+    },
+
+    {
+      "name": "Order",
+      "description": "Order management"
+    },
+    {
+      "name": "Coupon",
+      "description": "Coupon management"
+    }
+  ],
+  "paths": {
+    "/api/v1/auth/signup": {
+      "post": {
+        "summary": "User signup",
+        "tags": ["Auth"],
+        "requestBody": {
+          "description": "User signup data",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserSignup"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User signup successful"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/login": {
+      "post": {
+        "summary": "User login",
+        "tags": ["Auth"],
+        "requestBody": {
+          "description": "User login data",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLogin"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User login successful"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/forgotpassword": {
+      "post": {
+        "summary": "Forgot password",
+        "tags": ["Auth"],
+        "requestBody": {
+          "description": "User email for password reset",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserForgotPassword"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset code sent successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/verifyResetCode": {
+      "post": {
+        "summary": "Verify password reset code",
+        "tags": ["Auth"],
+        "requestBody": {
+          "description": "Verification data for password reset code",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserVerifyResetCode"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Reset code verification successful"
+          }
+        }
+      }
+    },
+    "/api/v1/auth/resetpassword": {
+      "put": {
+        "summary": "Reset password",
+        "tags": ["Auth"],
+        "requestBody": {
+          "description": "New password data",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserResetPassword"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset successful"
+          }
+        }
+      }
+    },
+
+    "/api/v1/user/": {
+      "get": {
+        "summary": "Get users",
+        "tags": ["User"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of users"
+          }
+        }
+      }
+    },
+    "/api/v1/user/:id": {
+      "get": {
+        "summary": "Get user by ID",
+        "tags": ["User"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User details"
+          }
+        }
+      }
+    },
+    "/api/v1/user/create": {
+      "post": {
+        "summary": "Create user",
+        "tags": ["User"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "User data for creation",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNewUser"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User created successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/user/update/{_id}": {
+      "put": {
+        "summary": "Update user by ID",
+        "tags": ["User"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "User data for update",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User updated successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/user/delete/{id}": {
+      "delete": {
+        "summary": "Delete user by ID",
+        "tags": ["User"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User deleted successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/user/change-password/{_id}": {
+      "put": {
+        "summary": "Change user's password by ID",
+        "tags": ["User"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Updated password data",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserChangePassword"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User's password changed successfully"
+          }
+        }
+      }
+    },
+
+    "/api/v1/user/me/profile": {
+      "get": {
+        "summary": "Get logged user's profile",
+        "tags": ["Logged User"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Logged user's profile"
+          }
+        }
+      }
+    },
+    "/api/v1/user/deactivate-Account/": {
+      "patch": {
+        "summary": "Deactivate logged user's account",
+        "tags": ["Logged User"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Logged user's account deactivated successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/user/update-Profile/": {
+      "put": {
+        "summary": "Update logged user's profile",
+        "tags": ["Logged User"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Updated user profile data",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserUpdateProfile"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Logged user's profile updated successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/user/change-My-Password/": {
+      "put": {
+        "summary": "Change logged user's password",
+        "tags": ["Logged User"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Updated password data",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserChangePassword"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Logged user's password changed successfully"
+          }
+        }
+      }
+    },
+
+    "/api/v1/address/": {
+      "get": {
+        "summary": "Get addresses",
+        "tags": ["AddressUser"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of addresses"
+          }
+        }
+      }
+    },
+    "/api/v1/address/add": {
+      "post": {
+        "summary": "Add address",
+        "tags": ["AddressUser"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Address data for creation",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNewAddress"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Address added successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/address/update/{addressId}": {
+      "put": {
+        "summary": "Update address by ID",
+        "tags": ["AddressUser"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "addressId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Address data for update",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAddress"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Address updated successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/address/delete/{addressId}": {
+      "delete": {
+        "summary": "Delete address by ID",
+        "tags": ["AddressUser"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "addressId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Address deleted successfully"
+          }
+        }
+      }
+    },
+
+    "/api/v1/brand/": {
+      "get": {
+        "summary": "Get brands",
+        "tags": ["Brand"],
+        "responses": {
+          "200": {
+            "description": "List of brands"
+          }
+        }
+      }
+    },
+    "/api/v1/brand/:id": {
+      "get": {
+        "summary": "Get brand by ID",
+        "tags": ["Brand"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Brand details"
+          }
+        }
+      }
+    },
+    "/api/v1/brand/create": {
+      "post": {
+        "summary": "Create brand",
+        "tags": ["Brand"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Brand data for creation",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNewBrand"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNewBrand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Brand created successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/brand/update/{_id}": {
+      "put": {
+        "summary": "Update brand by ID",
+        "tags": ["Brand"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Brand data for update",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBrand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Brand updated successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/brand/delete/{id}": {
+      "delete": {
+        "summary": "Delete brand by ID",
+        "tags": ["Brand"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Brand deleted successfully"
+          }
+        }
+      }
+    },
+
+    "/api/v1/category/": {
+      "get": {
+        "summary": "Get categories",
+        "tags": ["Category"],
+        "responses": {
+          "200": {
+            "description": "List of categories"
+          }
+        }
+      }
+    },
+    "/api/v1/category/:id": {
+      "get": {
+        "summary": "Get category by ID",
+        "tags": ["Category"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Category details"
+          }
+        }
+      }
+    },
+    "/api/v1/category/create": {
+      "post": {
+        "summary": "Create category",
+        "tags": ["Category"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Category data for creation",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNewCategory"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Category created successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/category/update/{_id}": {
+      "put": {
+        "summary": "Update category by ID",
+        "tags": ["Category"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Category data for update",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCategory"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Category updated successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/category/delete/{id}": {
+      "delete": {
+        "summary": "Delete category by ID",
+        "tags": ["Category"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Category deleted successfully"
+          }
+        }
+      }
+    },
+
+    "/api/v1/category/:categoryId/subCategory/": {
+      "get": {
+        "summary": "Get subCategories by category ID",
+        "tags": ["Category/SubCategory"],
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "List of subCategories"
+          }
+        }
+      }
+    },
+
+    "/api/v1/product/": {
+      "get": {
+        "summary": "Get products",
+        "tags": ["Product"],
+        "responses": {
+          "200": {
+            "description": "List of products"
+          }
+        }
+      }
+    },
+    "/api/v1/product/:id": {
+      "get": {
+        "summary": "Get product by ID",
+        "tags": ["Product"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "Product details"
+          }
+        }
+      }
+    },
+    "/api/v1/product/create": {
+      "post": {
+        "summary": "Create product",
+        "tags": ["Product"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Product data for creation",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNewProduct"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNewProduct"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Product created successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/product/update/{_id}": {
+      "put": {
+        "summary": "Update product by ID",
+        "tags": ["Product"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+
+        "requestBody": {
+          "description": "Product data for update",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Product updated successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/product/delete/{id}": {
+      "delete": {
+        "summary": "Delete product by ID",
+        "tags": ["Product"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "Product deleted successfully"
+          }
+        }
+      }
+    },
+
+    "/api/v1/subCategory/": {
+      "get": {
+        "summary": "Get subCategories",
+        "tags": ["SubCategory"],
+        "responses": {
+          "200": {
+            "description": "List of subCategories"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/api/v1/subCategory/:id": {
+      "get": {
+        "summary": "Get subCategory by ID",
+        "tags": ["SubCategory"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "SubCategory details"
+          }
+        }
+      }
+    },
+    "/api/v1/subCategory/create": {
+      "post": {
+        "summary": "Create subCategory",
+        "tags": ["SubCategory"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "SubCategory data for creation",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNewSubCategory"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "SubCategory created successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/subCategory/update/{_id}": {
+      "put": {
+        "summary": "Update subCategory by ID",
+        "tags": ["SubCategory"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+
+        "requestBody": {
+          "description": "SubCategory data for update",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubCategoryUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "SubCategory updated successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/subCategory/delete/{id}": {
+      "delete": {
+        "summary": "Delete subCategory by ID",
+        "tags": ["SubCategory"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "SubCategory deleted successfully"
+          }
+        }
+      }
+    },
+
+    "/api/v1/review/": {
+      "get": {
+        "summary": "Get reviews",
+        "tags": ["Review"],
+        "responses": {
+          "200": {
+            "description": "List of reviews"
+          }
+        }
+      }
+    },
+    "/api/v1/review/:id": {
+      "get": {
+        "summary": "Get review by ID",
+        "tags": ["Review"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "Review details"
+          }
+        }
+      }
+    },
+    "/api/v1/review/add": {
+      "post": {
+        "summary": "Create review",
+        "tags": ["Review"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Review data for creation",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNewReview"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Review created successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/review/update/{_id}": {
+      "put": {
+        "summary": "Update review by ID",
+        "tags": ["Review"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+
+        "requestBody": {
+          "description": "Review data for update",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNewReview"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Review updated successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/review/delete/{id}": {
+      "delete": {
+        "summary": "Delete review by ID",
+        "tags": ["Review"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "Review deleted successfully"
+          }
+        }
+      }
+    },
+
+    "/api/v1/review/:productId/reviews": {
+      "get": {
+        "summary": "Get reviews by product ID",
+        "tags": ["ProductReview"],
+        
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "List of reviews"
+          }
+        }
+      }
+    },
+    "/api/v1/review/:productId/add": {
+      "post": {
+        "summary": "Create review",
+        "tags": ["ProductReview"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Review data for creation",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNewReview2"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Review created successfully"
+          }
+        }
+      }
+    },
+
+    "/api/v1/product/:productId/reviews/:id": {
+      "get": {
+        "summary": "Get review by ID",
+        "tags": ["ProductReview"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "Review details"
+          }
+        }
+      }
+    },
+
+    "/api/v1/wishlist/": {
+      "get": {
+        "summary": "Get wishlists",
+        "tags": ["Wishlist"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of wishlists"
+          }
+        }
+      }
+    },
+    "/api/v1/wishlist/add": {
+      "post": {
+        "summary": "Create wishlist",
+        "tags": ["Wishlist"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Wishlist data for creation",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNewWishlist"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Wishlist created successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/wishlist/delete/:productId": {
+      "delete": {
+        "summary": "Delete wishlist by product ID",
+        "tags": ["Wishlist"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "Wishlist deleted successfully"
+          }
+        }
+      }
+    },
+
+    "/api/v1/cart/": {
+      "get": {
+        "summary": "Get carts",
+        "tags": ["Cart"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of carts"
+          }
+        }
+      }
+    },
+    "/api/v1/cart/add": {
+      "post": {
+        "summary": "Create cart",
+        "tags": ["Cart"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Cart data for creation",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNewCart"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cart created successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/cart/clear": {
+      "delete": {
+        "summary": "Clear cart",
+        "tags": ["Cart"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cart cleared successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/cart/remove/:itemId": {
+      "delete": {
+        "summary": "Remove item from cart",
+        "tags": ["Cart"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "itemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "Item removed successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/cart/update/:itemId": {
+      "patch": {
+        "summary": "Update item in cart",
+        "tags": ["Cart"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "itemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Cart data for update",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CartUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Item updated successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/cart/applyCouponProduct/:itemId": {
+      "patch": {
+        "summary": "Apply coupon to item in cart",
+        "tags": ["Cart"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "itemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Cart data for update",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApplyCoupon"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Item updated successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/cart/applyCoupon/:itemId": {
+      "patch": {
+        "summary": "Apply coupon to item in cart",
+        "tags": ["Cart"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "itemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Cart data for update",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ApplyCoupon"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Item updated successfully"
+          }
+        }
+      }
+    },
+
+    "/api/v1/coupon/": {
+      "get": {
+        "summary": "Get coupons",
+        "tags": ["Coupon"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of coupons"
+          }
+        }
+      }
+    },
+    "/api/v1/coupon/:id": {
+      "get": {
+        "summary": "Get coupon by ID",
+        "tags": ["Coupon"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "Coupon details"
+          }
+        }
+      }
+    },
+    "/api/v1/coupon/create": {
+      "post": {
+        "summary": "Create coupon",
+        "tags": ["Coupon"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Coupon data for creation",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShippingAddress"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Coupon created successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/coupon/update/{_id}": {
+      "put": {
+        "summary": "Update coupon by ID",
+        "tags": ["Coupon"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+
+        "requestBody": {
+          "description": "Coupon data for update",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CouponUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Coupon updated successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/coupon/delete/{id}": {
+      "delete": {
+        "summary": "Delete coupon by ID",
+        "tags": ["Coupon"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "Coupon deleted successfully"
+          }
+        }
+      }
+    },
+
+    "/api/v1/order/": {
+      "get": {
+        "summary": "Get orders",
+        "tags": ["Order"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of orders"
+          }
+        }
+      }
+    },
+    "/api/v1/order/:id": {
+      "get": {
+        "summary": "Get order by ID",
+        "tags": ["Order"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "Order details"
+          }
+        }
+      }
+    },
+    "/api/v1/order/:cartId": {
+      "post": {
+        "summary": "Create order",
+        "tags": ["Order"],
+
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "cartId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Order data for creation",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNewOrder"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Order created successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/order/:id/pay": {
+      "patch": {
+        "summary": "Pay order by ID",
+        "tags": ["Order"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Order data for update",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PayOrder"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Order paid successfully"
+          }
+        }
+      }
+    }
+  },
+
+  "components": {
+    "schemas": {
+      "UserSignup": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "type": "string"
+          },
+          "confirmPassword": {
+            "type": "string"
+          }
+        },
+        "required": ["name", "email", "password", "confirmPassword"]
+      },
+      "UserLogin": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": ["email", "password"]
+      },
+      "UserForgotPassword": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          }
+        },
+        "required": ["email"]
+      },
+      "UserVerifyResetCode": {
+        "type": "object",
+        "properties": {
+          "resetCode": {
+            "type": "string"
+          }
+        },
+        "required": ["resetCode"]
+      },
+      "UserResetPassword": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "newPassword": {
+            "type": "string"
+          }
+        },
+        "required": ["email", "newPassword"]
+      },
+
+      "CreateNewUser": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "phone": {
+            "type": "string",
+            "format": "phone"
+          },
+          "password": {
+            "type": "string"
+          },
+          "confirmPassword": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "profileImage": {
+            "type": "string"
+          }
+        },
+        "required": ["name", "email", "password", "confirmPassword", "role"]
+      },
+      "UserUpdate": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "phone": {
+            "type": "string",
+            "format": "phone"
+          },
+          "password": {
+            "type": "string"
+          },
+          "confirmPassword": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "profileImage": {
+            "type": "string"
+          }
+        },
+        "optional": [
+          "name",
+          "email",
+          "password",
+          "confirmPassword",
+          "role",
+          "profileImage",
+          "phone"
+        ]
+      },
+      "UserChangePassword": {
+        "type": "object",
+        "properties": {
+          "currentPassword": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "confirmPassword": {
+            "type": "string"
+          }
+        },
+        "required": ["currentPassword", "password", "confirmPassword"]
+      },
+      "CreateNewAddress": {
+        "type": "object",
+        "properties": {
+          "alias": {
+            "type": "string"
+          },
+          "details": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string",
+            "format": "phone"
+          },
+          "city": {
+            "type": "string"
+          },
+          "postalCode": {
+            "type": "string"
+          }
+        },
+        "required": ["alias", "details", "phone", "city", "postalCode"]
+      },
+      "UpdateAddress": {
+        "type": "object",
+        "properties": {
+          "alias": {
+            "type": "string"
+          },
+          "details": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "postalCode": {
+            "type": "string"
+          }
+        },
+        "optional": ["alias", "details", "phone", "city", "postalCode"]
+      },
+
+      "CreateNewBrand": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string",
+            "format": "binary"
+          }
+        },
+        "required": ["name", "description", "image"]
+      },
+      "UpdateBrand": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "optional": ["name"]
+      },
+
+      "CreateNewCategory": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": ["name"]
+      },
+      "UpdateCategory": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "optional": ["name"]
+      },
+
+      "CreateNewProduct": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "quntity": {
+            "type": "number"
+          },
+          "price": {
+            "type": "number"
+          },
+          "category": {
+            "type": "string"
+          },
+          "color[0]": {
+            "type": "string"
+          },
+          "size[0]": {
+            "type": "string"
+          },
+          "subCategory[0]": {
+            "type": "string"
+          },
+          "brand": {
+            "type": "string"
+          },
+          "imageCover": {
+            "type": "string",
+            "format": "binary"
+          },
+          "images[0]": {
+            "type": "string",
+            "format": "binary"
+          }
+        },
+        "required": [
+          "title",
+          "description",
+          "quntity",
+          "price",
+          "category",
+          "color[0]",
+          "size[0]",
+          "subCategory[0]",
+          "brand",
+          "imageCover",
+          "images[0]"
+        ]
+      },
+      "ProductUpdate": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "quntity": {
+            "type": "number"
+          },
+          "price": {
+            "type": "number"
+          },
+          "category": {
+            "type": "string"
+          },
+          "color[0]": {
+            "type": "string"
+          },
+          "size[0]": {
+            "type": "string"
+          },
+          "subCategory[0]": {
+            "type": "string"
+          },
+          "brand": {
+            "type": "string"
+          },
+          "imageCover": {
+            "type": "string",
+            "format": "binary"
+          },
+          "images[0]": {
+            "type": "string",
+            "format": "binary"
+          }
+        },
+        "optional": [
+          "title",
+          "description",
+          "quntity",
+          "price",
+          "category",
+          "color[0]",
+          "size[0]",
+          "subCategory[0]",
+          "brand",
+          "imageCover",
+          "images[0]"
+        ]
+      },
+
+      "CreateNewSubCategory": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          }
+        },
+        "required": ["name", "category"]
+      },
+      "SubCategoryUpdate": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          }
+        },
+        "optional": ["name", "category"]
+      },
+
+      "CreateNewReview": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "ratings": {
+            "type": "number"
+          },
+          "product": {
+            "type": "string"
+          }
+        },
+        "required": ["ratings", "product"],
+        "optional": ["title"]
+      },
+      "CreateNewReview2": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "ratings": {
+            "type": "number"
+          }
+        },
+        "required": ["ratings"],
+        "optional": ["title"]
+      },
+
+      "CreateNewWishlist": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "type": "string"
+          }
+        },
+        "required": ["productId"]
+      },
+
+      "CreateNewCart": {
+        "type": "object",
+        "properties": {
+          "ProductId": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "size": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          }
+        },
+        "required": ["ProductId", "quantity"],
+        "optional": ["size", "color"]
+      },
+      "CartUpdate": {
+        "type": "object",
+        "properties": {
+          "quantity": {
+            "type": "number"
+          },
+          "size": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string"
+          }
+        },
+        "optional": ["quantity", "size", "color"]
+      },
+
+      "ApplyCoupon": {
+        "type": "object",
+        "properties": {
+          "coupon": {
+            "type": "string"
+          }
+        },
+        "required": ["coupon"]
+      },
+
+      "CreateNewCoupon": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "discount": {
+            "type": "number"
+          },
+          "numberOfUsed": {
+            "type": "number"
+          },
+          "expire": {
+            "type": "date"
+          }
+        },
+        "required": ["code", "discount", "numberOfUsed", "expire"]
+      },
+
+      "CouponUpdate": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "discount": {
+            "type": "number"
+          },
+          "numberOfUsed": {
+            "type": "number"
+          },
+          "expire": {
+            "type": "date"
+          }
+        },
+        "optional": ["code", "discount", "numberOfUsed", "expire"]
+      },
+      "ShippingAddress": {
+        "type": "object",
+        "properties": {
+          "details": {
+            "type": "string",
+            "default": "Null"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "postalCode": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

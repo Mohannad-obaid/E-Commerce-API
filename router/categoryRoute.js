@@ -26,7 +26,6 @@ const authService = require("../services/authServices");
 
 router.use("/:categoryId/subCategory/", subcategoriesRoute);
 //router.use('/:categoryId/subcategories',    subcategoriesRoute);
-
 //router.use(authService.protect, authService.allowedTo('admin', 'manager');
 
 router

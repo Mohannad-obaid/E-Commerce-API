@@ -29,7 +29,7 @@ const {
 } = require("../utils/validator/userValidator");
 
 router
-  .route("/getUsers")
+  .route("/")
   .get(
     authService.protect,
     authService.allowedTo("admin", "manager"),
@@ -72,8 +72,8 @@ router
     authService.protect,
     authService.allowedTo("admin"),
     uplodUserImage,
-   // resizeUserImage,
-   uploadImage,
+    // resizeUserImage,
+    uploadImage,
     updateUserValidator,
     updateUser
   );
@@ -98,16 +98,16 @@ router
 
 router
   .route("/deactivate-Account/")
-  .delete(
+  .patch(
     authService.protect,
-    authService.allowedTo("admin","user"),
+    authService.allowedTo("admin", "user"),
     deactivateAccountUserLogged
   );
 
 router
   .route("/change-My-Password/")
-  .put(authService.protect,authService.allowedTo("admin","user"),
-  getUserValidator, changeLoggedUserPasswordValidator, updateLoggedUserPassword);
+  .put(authService.protect, authService.allowedTo("admin", "user"),
+    getUserValidator, changeLoggedUserPasswordValidator, updateLoggedUserPassword);
 
 router
   .route("/change-password/:_id")

@@ -2,7 +2,7 @@ const asyncHandler = require("express-async-handler");
 const ApiError = require("../utils/apiError");
 const ApiFeatures = require("../utils/apiFeatures");
 const User = require("../models/userModel");
-const { sanitizeUserLogged } = require("../utils/sanitizeData");
+const { sanitizeUserLogged , sanitizeLogin } = require("../utils/sanitizeData");
 
 
 
@@ -45,7 +45,7 @@ exports.createOne = (Model) =>
       return next(new ApiError("Document don`t create", 404));
     }
 
-    res.status(201).json(document);
+    res.status(200).json(document);
   });
 
 exports.getAll = (Model, modelName = "") =>
@@ -68,6 +68,11 @@ exports.getAll = (Model, modelName = "") =>
 
     const { mongooseQuery, paginateResult } = newDocument;
     const Document = await mongooseQuery;
+
+    if(Model === User){
+      return res.status(200)
+      .json({ result: Document.length, paginateResult, data: Document.map((user) => sanitizeLogin(user))});
+    }
 
     res
       .status(200)

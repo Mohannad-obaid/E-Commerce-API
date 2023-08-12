@@ -5,12 +5,14 @@ const helmet = require("helmet");
 const hpp = require("hpp");
 const mongoSanitize = require('express-mongo-sanitize');
 const { xss } = require('express-xss-sanitizer');
+const swaggerUi = require('swagger-ui-express');
 
 dotenv.config({ path: "config.env" });
 const port = process.env.PORT || 3030;
 const morgan = require("morgan");
 const cors = require("cors");
 const compression = require("compression");
+const swaggerDocument = require('./swagger.json');
 const dbConnect = require("./config/db");
 const ApiError = require("./utils/apiError");
 const globalErrorHandler = require("./middlewares/errorMiddleware");
@@ -83,6 +85,11 @@ app.use(express.static("public"));
 
 // Mount routes to app
 mountRoutes(app);
+
+// Swagger UI setup for API documentation 
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 
 // Checkout webhook
 app.post(
