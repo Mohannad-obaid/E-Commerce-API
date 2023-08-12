@@ -6,9 +6,11 @@ const hpp = require("hpp");
 const mongoSanitize = require('express-mongo-sanitize');
 const { xss } = require('express-xss-sanitizer');
 const swaggerUi = require('swagger-ui-express');
+const passport = require('passport');
+const session = require('express-session');
 
 dotenv.config({ path: "config.env" });
-const port = process.env.PORT || 3030;
+const port = process.env.PORT || 8080;
 const morgan = require("morgan");
 const cors = require("cors");
 const compression = require("compression");
@@ -19,6 +21,7 @@ const globalErrorHandler = require("./middlewares/errorMiddleware");
 const { webhookCheckout } = require("./services/orderServices");
 // Routes
 const mountRoutes = require("./router");
+const OAuthRoutes = require("./router/OAuthRoutes");
 
 const app = express();
 
@@ -69,6 +72,7 @@ const limiter = rateLimit({
 // Apply the rate limiting middleware to all requests
 app.use("/api", limiter);
 
+
 // Prevent parameter pollution
 app.use(
     hpp({
@@ -77,14 +81,31 @@ app.use(
 );
 
 
-
-
-
 // Routes
 app.use(express.static("public"));
 
+// session middleware
+app.use(session({
+    secret: 'mysecret',
+    resave: false,
+    saveUninitialized: true
+}));
+
+// Passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
+
+// OAuth 2.0 routes
+OAuthRoutes(app);
+
+
 // Mount routes to app
 mountRoutes(app);
+
+
+
+
+
 
 // Swagger UI setup for API documentation 
 
