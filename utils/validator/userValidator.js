@@ -85,7 +85,7 @@ exports.changeUserPasswordValidator = [
                 throw new Error("User not found");
             }
 
-            const isCurrentPassword = await bcrypt.compare(req.body.currentPassword, user.password)
+            const isCurrentPassword = bcrypt.compare(req.body.currentPassword, user.password)
 
             if (!isCurrentPassword) {
                 throw new Error("Current password is incorrect");

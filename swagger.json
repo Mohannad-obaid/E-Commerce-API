@@ -6,15 +6,21 @@
     "description": "This is a sample server for an E-Commerce service API."
   },
   "servers": [
+
     {
-      "url": "https://shop-system.azurewebsites.net/",
-      "description": "Production server (hosted on Azure)"
+      "url": "http://localhost:8080",
+      "description": "Local server"
     }
   ],
   "tags": [
     {
       "name": "Auth",
       "description": "Auth management"
+    },
+    {
+      "name" : "OAuth",
+      "description": "OAuth Google"
+      
     },
     {
       "name": "User",
@@ -185,6 +191,19 @@
         }
       }
     },
+
+    "/auth/google": {
+      "get": {
+        "summary": "Google OAuth",
+        "tags": ["OAuth"],
+        "responses": {
+          "200": {
+            "description": "Google OAuth successful"
+          }
+        }
+      }
+      },
+    
 
     "/api/v1/user/": {
       "get": {

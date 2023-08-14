@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 
 const userShcema = new mongoose.Schema(
   {
+
     name: {
       type: String,
       trim: true,
@@ -36,6 +37,14 @@ const userShcema = new mongoose.Schema(
     passwordResetExpire: Date,
     passwordResetVerified: Boolean,
 
+
+    confirmAccountCode: String,
+    confirmAccountExpire: Date,
+    accountVerification: {
+      type: Boolean,
+      default: false
+    },
+
     active: {
       type: Boolean,
       default: true,
@@ -45,6 +54,12 @@ const userShcema = new mongoose.Schema(
       type: String,
       enum: ["user", "manager", "admin"],
       default: "user",
+    },
+
+    provider: {
+      type: String,
+      enum: ["email", "facebook", "google"],
+      default: "email",
     },
 
     wishlist: [

@@ -135,7 +135,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
   // 2) generate random  number 6 digit
   const randomCode = Math.floor(100000 + Math.random() * 900000);
   // 3) hash the random number (save to db)
-  const hashedReasetCode = crypto
+  const hashedReasetCode =await crypto
     .createHash("sha256")
     .update(randomCode.toString())
     .digest("hex");
@@ -180,7 +180,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 // @access Public
 exports.verifyResetCode = asyncHandler(async (req, res, next) => {
   // 1) get user based on reset code
-  const hashedReasetCode = crypto
+  const hashedReasetCode = await crypto
     .createHash("sha256")
     .update(req.body.resetCode)
     .digest("hex");

@@ -21,9 +21,29 @@ const globalErrorHandler = require("./middlewares/errorMiddleware");
 const { webhookCheckout } = require("./services/orderServices");
 // Routes
 const mountRoutes = require("./router");
-const OAuthRoutes = require("./router/OAuthRoutes");
+const OAuthRoutes = require("./OAuth/routes/OAuthGoogleRoutes");
+const OAuthFacebookRoutes = require("./OAuth/routes/OAuthFacebookRoute");
 
 const app = express();
+
+
+// session middleware
+app.use(
+    session({
+        secret: 'YOUR_SESSION_SECRET',
+        resave: false,
+        saveUninitialized: false,
+    })
+);
+
+// Initialize passport and session middleware
+app.use(passport.initialize());
+app.use(passport.session());
+
+
+// OAuth 2.0 routes
+OAuthRoutes(app);
+OAuthFacebookRoutes(app);
 
 // Set security HTTP headers
 app.use(helmet());
@@ -84,19 +104,7 @@ app.use(
 // Routes
 app.use(express.static("public"));
 
-// session middleware
-app.use(session({
-    secret: 'mysecret',
-    resave: false,
-    saveUninitialized: true
-}));
 
-// Passport middleware
-app.use(passport.initialize());
-app.use(passport.session());
-
-// OAuth 2.0 routes
-OAuthRoutes(app);
 
 
 // Mount routes to app
