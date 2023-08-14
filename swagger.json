@@ -6,7 +6,6 @@
     "description": "This is a sample server for an E-Commerce service API."
   },
   "servers": [
-
     {
       "url": "http://localhost:8080",
       "description": "Local server"
@@ -18,9 +17,12 @@
       "description": "Auth management"
     },
     {
-      "name" : "OAuth",
+      "name": "OAuth",
       "description": "OAuth Google"
-      
+    },
+    {
+      "name": "OAuth",
+      "description": "OAuth Facebook"
     },
     {
       "name": "User",
@@ -202,8 +204,19 @@
           }
         }
       }
-      },
-    
+    },
+
+    "/auth/facebook": {
+      "get": {
+        "summary": "Facebook OAuth",
+        "tags": ["OAuth"],
+        "responses": {
+          "200": {
+            "description": "Facebook OAuth successful"
+          }
+        }
+      }
+    },
 
     "/api/v1/user/": {
       "get": {
@@ -1245,7 +1258,7 @@
       "get": {
         "summary": "Get reviews by product ID",
         "tags": ["ProductReview"],
-        
+
         "parameters": [
           {
             "name": "productId",

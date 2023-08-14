@@ -3,18 +3,18 @@ const dotenv = require("dotenv");
 const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
 const hpp = require("hpp");
-const mongoSanitize = require('express-mongo-sanitize');
-const { xss } = require('express-xss-sanitizer');
-const swaggerUi = require('swagger-ui-express');
-const passport = require('passport');
-const session = require('express-session');
+const mongoSanitize = require("express-mongo-sanitize");
+const { xss } = require("express-xss-sanitizer");
+const swaggerUi = require("swagger-ui-express");
+const passport = require("passport");
+const session = require("express-session");
 
 dotenv.config({ path: "config.env" });
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 3000;
 const morgan = require("morgan");
 const cors = require("cors");
 const compression = require("compression");
-const swaggerDocument = require('./swagger.json');
+const swaggerDocument = require("./swagger.json");
 const dbConnect = require("./config/db");
 const ApiError = require("./utils/apiError");
 const globalErrorHandler = require("./middlewares/errorMiddleware");
@@ -26,20 +26,18 @@ const OAuthFacebookRoutes = require("./OAuth/routes/OAuthFacebookRoute");
 
 const app = express();
 
-
 // session middleware
 app.use(
-    session({
-        secret: 'YOUR_SESSION_SECRET',
-        resave: false,
-        saveUninitialized: false,
-    })
+  session({
+    secret: "YOUR_SESSION_SECRET",
+    resave: false,
+    saveUninitialized: false,
+  })
 );
 
 // Initialize passport and session middleware
 app.use(passport.initialize());
 app.use(passport.session());
-
 
 // OAuth 2.0 routes
 OAuthRoutes(app);
@@ -60,9 +58,9 @@ app.use(compression());
 
 // Checkout webhook
 app.post(
-    "/webhook-checkout",
-    express.raw({ type: "application/json" }),
-    webhookCheckout
+  "/webhook-checkout",
+  express.raw({ type: "application/json" }),
+  webhookCheckout
 );
 
 // Body parser, reading data from body into req.body
@@ -78,63 +76,52 @@ app.use(mongoSanitize());
 
 // Dev logging middleware
 if (process.env.NODE_ENV === "development") {
-    app.use(morgan("dev"));
-    console.log("Morgan enabled...");
+  app.use(morgan("dev"));
+  console.log("Morgan enabled...");
 }
 
 // Limit request from same API
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 105, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-    message: "Too many requests from this IP, please try again in an hour!",
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 105, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  message: "Too many requests from this IP, please try again in an hour!",
 });
 
 // Apply the rate limiting middleware to all requests
 app.use("/api", limiter);
 
-
 // Prevent parameter pollution
 app.use(
-    hpp({
-        whitelist: ["sold", "price", "ratingsAverage", "ratingsQuantity"],
-    })
+  hpp({
+    whitelist: ["sold", "price", "ratingsAverage", "ratingsQuantity"],
+  })
 );
-
 
 // Routes
 app.use(express.static("public"));
 
-
-
-
 // Mount routes to app
 mountRoutes(app);
 
+// Swagger UI setup for API documentation
 
-
-
-
-
-// Swagger UI setup for API documentation 
-
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Checkout webhook
 app.post(
-    "/webhook-checkout",
-    express.raw({ type: "application/json" }),
-    webhookCheckout
+  "/webhook-checkout",
+  express.raw({ type: "application/json" }),
+  webhookCheckout
 );
 
 //app.listen(4242, () => console.log('Running on port 4242'));
 
 app.all("*", (req, res, next) => {
-    // create error and pass to next middleware
-    // const err = new Error(`Can't find ${req.originalUrl} on this server!`);
-    // next(err.message);
+  // create error and pass to next middleware
+  // const err = new Error(`Can't find ${req.originalUrl} on this server!`);
+  // next(err.message);
 
-    next(new ApiError(`Can't find this route :${req.originalUrl}`, 400));
+  next(new ApiError(`Can't find this route :${req.originalUrl}`, 400));
 });
 
 //Erorr Handler
@@ -142,15 +129,15 @@ app.use(globalErrorHandler);
 
 // Listen to port
 const server = app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+  console.log(`Server is running on port ${port}`);
 });
 
 // Handle  rejection outside express
 
 process.on("unhandledRejection", (err) => {
-    console.log(`UnhandledRejection Error : ${err.name} ${err.message}`);
-    server.close(() => {
-        console.log("Server shutdown ...");
-        process.exit(1);
-    });
+  console.log(`UnhandledRejection Error : ${err.name} ${err.message}`);
+  server.close(() => {
+    console.log("Server shutdown ...");
+    process.exit(1);
+  });
 });
