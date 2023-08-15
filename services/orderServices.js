@@ -149,8 +149,6 @@ exports.updateOrderToDelivered = asyncHandler(async (req, res, next) => {
 });
 
 
-
-
 // @desc    Get checkout session from stripe and send it as response
 // @route   GET /api/v1/orders/checkout-session/cartId
 // @access  Protected/User
@@ -219,7 +217,9 @@ exports.checkoutSession = asyncHandler(async (req, res, next) => {
   });
 });
 
-
+// @desc Create order after stripe payment success paid
+// @route POST /api/v1/orders/checkout-session/cartId
+// @access Protected/User
 const createCartOrder = async (session) => {
   const cartId = session.client_reference_id;
   const shippingAddress = session.metadata;
